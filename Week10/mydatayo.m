@@ -24,7 +24,24 @@ hold on
 %%
 % call on my function WeightedLSQFit.m
 w = ey.^(-2)
-[a,b,c,d] = WeightedLSQFit(x,y,w)
+[r,t,u,i] = WeightedLSQFit(x,y,w)
 
-q = a.*x + c
+q = r.*x + u
 plot(x,q)
+
+%%
+% function to fit
+fun = @(a,b,c,x) -sqrt(a^2-(x-b).^2)+c
+% Find a starting point for the parameters a, b, and c.
+guess = fun(15,0,15,x); % fun(a,b,c,x)
+plot(x,guess,'r:')
+% fit the data
+fittedmodel = fit(x',y',fun,'StartPoint',[15 0 15])
+%plot the result
+plot(fittedmodel,'r-');
+%%
+% fit the data using the uncertainties as weights
+w = ey.^-2
+weightedfit = fit(x',y',fun,'StartPoint',[15 0 15], 'Weights',w')
+% plot the result
+plot(weightedfit, 'r-');
